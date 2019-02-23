@@ -32,6 +32,14 @@ func init() {
 		host := fmt.Sprintf("%s.es.amazonaws.com", region)
 		services[host] = endpoints.ResolvedEndpoint{URL: fmt.Sprintf("https://%s", host), SigningMethod: "v4", SigningRegion: region, SigningName: "es"}
 	}
+	// Add s3 endpoints
+	for region := range endpoints.AwsPartition().Regions() {
+		formats := []string{"s3-%s.amazonaws.com", "s3.%s.amazonaws.com"}
+		for _, format := range formats {
+			host := fmt.Sprintf(format, region)
+			services[host] = endpoints.ResolvedEndpoint{URL: fmt.Sprintf("https://%s", host), SigningMethod: "v4", SigningRegion: region, SigningName: "s3"}
+		}
+	}
 }
 
 func determineAWSServiceFromHost(host string) *endpoints.ResolvedEndpoint {
